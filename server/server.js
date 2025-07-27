@@ -1,5 +1,5 @@
 const dotenv = require('dotenv')
-dotenv.config({path: './config.env'})
+dotenv.config({path: './.env'})
 
 const dbconfig = require('./config/dbConfig')
 const app = require('./index') // to import the app from another file
