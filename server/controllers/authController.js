@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const bcrypt = require('bcryptjs');
 const User = require('./../models/user');
+const jwt = require('jsonwebtoken')
 
 router.post('/signup', async (req, res) => {
     try{
@@ -9,7 +10,7 @@ router.post('/signup', async (req, res) => {
 
         // if user exists, send an error message
         if(user){
-            return res.send({
+            return res.status(400).send({
                 message: 'User already exists.',
                 success: false
             })
@@ -29,6 +30,45 @@ router.post('/signup', async (req, res) => {
         });
 
     }catch(error){
+        res.send({
+            message: error.message,
+            success: false
+        });
+    }
+})
+
+router.post('/login' , async (req ,res) => {
+    try {
+
+        // check if the user exists with that email
+        const user = await User.findOne({email:req.body.email})
+        if(!user){ // if user does not exist
+            return res.send({
+                message: 'User does not exist',
+                success: false
+            })
+        }
+        
+        // if email exists but password is incorrect
+        const isValidPassword = await bcrypt.compare(req.body.password , user.password); // it will compare the plain password and encrypted password
+        if(!isValidPassword){
+            return res.status(400).send({
+                message: 'invalid password',
+                success: false
+            })
+        }
+
+        // if the user exists and password is correct then assign jwt token
+        const token = jwt.sign({userId: user._id} , process.env.SECRET_KEY , {expiresIn:"1d"}) // it will create a token for _id
+
+        res.send({
+            message: 'user logged-in successfully',
+            success: true,
+            token: token
+        });
+
+    } 
+    catch (error) {
         res.send({
             message: error.message,
             success: false
