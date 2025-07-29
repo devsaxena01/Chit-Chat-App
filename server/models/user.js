@@ -16,8 +16,7 @@ const userSchema = new mongoose.Schema({
     password:{
         type: String,
         required: true,
-        select:false, // we use it to not show the password field while checking in postman API and prevent our user data from being hacked
-        minlength:8 // the password should have a minimum of length 8 
+        //minlength:8 // the password should have a minimum of length 8 
     },
     profilePic:{
         type: String,

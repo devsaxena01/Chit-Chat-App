@@ -1,18 +1,18 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 
 const chatSchema = new mongoose.Schema({
-    members:{
-        type:[
-          {type: mongoose.Schema.Types.ObjectId , ref:"users" }  // Here we will take the userId of two users between whome the chat has started
+    members: {
+        type: [
+            {type: mongoose.Schema.Types.ObjectId, ref: "users"}
         ]
     },
-    lastmessage:{
-        type:mongoose.Schema.Types.ObjectId , ref:"messages"
+    lastMessage: {
+        type: mongoose.Schema.Types.ObjectId, ref: "messages"
     },
-    unreadMessageCount:{
+    unreadMessageCount: {
         type: Number,
-        default:0
+        default: 0
     }
-} , {timestamps:true})
+}, {timestamps: true});
 
-module.exports = mongoose.model("chats" , chatSchema)
+module.exports = mongoose.model("chats", chatSchema);
