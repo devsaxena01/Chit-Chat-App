@@ -10,7 +10,7 @@ router.post('/signup', async (req, res) => {
 
         // if user exists, send an error message
         if(user){
-            return res.status(400).send({
+            return res.send({
                 message: 'User already exists.',
                 success: false
             })
@@ -24,7 +24,7 @@ router.post('/signup', async (req, res) => {
         const newUser = new User(req.body);
         await newUser.save();
 
-        res.status(201).send({
+        res.send({
             message: 'User created successfully',
             success: true
         });
@@ -52,7 +52,7 @@ router.post('/login' , async (req ,res) => {
         // if email exists but password is incorrect
         const isValidPassword = await bcrypt.compare(req.body.password , user.password); // it will compare the plain password and encrypted password
         if(!isValidPassword){
-            return res.status(400).send({
+            return res.send({
                 message: 'invalid password',
                 success: false
             })
