@@ -1,6 +1,8 @@
 const router = require('express').Router()
 const Chat = require('./../models/chat')
 const authMiddleware = require('../middlewares/authMiddleware')
+const Message = require('./../models/message')
+
 
 router.post('/create-new-chat' , authMiddleware , async (req , res) => {
     try {
@@ -39,6 +41,41 @@ router.get('/get-all-chats' , authMiddleware , async (req , res) => {
         res.status(400).send({
             message:error.message,
             success:false
+        })
+    }
+})
+
+router.post('/clear-unread-message' , authMiddleware , async(req , res) => {
+    try {
+        const chatId = req.body.chatId
+
+        // we want to update the unread message count in the chat collection 
+        
+        const chat = await Chat.findById(chatId)
+        if(!chat){
+            res.send({
+                message:'chat not found with given  CHAT ID',
+                success:false
+            })
+        }
+
+        const updatedChat = await Chat.findByIdAndUpdate(chatId , {unreadMessageCount:0} , {new:true}).populate('members').populate('lastMessage')
+
+        // we want to update the read property to true in message collection
+
+        await Message.updateMany({chatId:chatId , read:false} , {read:true})
+
+        res.send({
+            message:'Unread messages cleares successfully',
+            success:true,
+            data:updatedChat
+        })
+
+    } 
+    catch (error) {
+        res.send({
+            message: error.message,
+            success: false
         })
     }
 })

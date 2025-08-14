@@ -14,6 +14,9 @@ module.exports = {
       },
       animation: {
         'spin-custom': 'spin-custom 1s linear infinite',
+      },
+      screens: {
+        'max-1000': { 'max': '1000px' } // Custom media query
       }
     },
   },

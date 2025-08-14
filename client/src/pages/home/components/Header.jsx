@@ -6,9 +6,9 @@ const Header = () => {
     //console.log(user);
     
     const getFullname = () => {
-        let fname = user?.firstname.toUpperCase()
-        let lname = user?.lastname.toUpperCase()
-        return fname+' '+lname
+        let fname = user?.firstname.at(0).toUpperCase() + user?.firstname.slice(1).toLowerCase();
+        let lname = user?.lastname?.at(0).toUpperCase() + user?.lastname.slice(1).toLowerCase();
+        return fname + ' ' + lname;
 
     }
 

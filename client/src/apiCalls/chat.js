@@ -9,9 +9,18 @@ export const getAllChats = async () => {
     }
 }
 
-export const createNewChat = async ({members}) => {
+export const createNewChat = async (members) => {
     try{
         const response = await axiosInstance.post('api/chat/create-new-chat' , {members});
+        return response.data;
+    }catch(error){
+        return error;
+    }
+}
+
+export const clearUnreadMessageCount = async (chatId) => {
+    try{
+        const response = await axiosInstance.post('api/chat/clear-unread-message' , {chatId:chatId});
         return response.data;
     }catch(error){
         return error;

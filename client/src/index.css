@@ -3,4 +3,43 @@
 @tailwind utilities;
 @import "@fortawesome/fontawesome-free/css/all.min.css";
 
+body{
+    overflow-y: hidden;
+}
 
+/* CHAT AREA SCROLLBAR */
+
+@layer utilities {
+  .main-chat-area::-webkit-scrollbar {
+    @apply w-[5px];
+  }
+
+  .main-chat-area::-webkit-scrollbar-track {
+    @apply shadow-inner shadow-gray-500 rounded-[10px];
+  }
+
+  .main-chat-area::-webkit-scrollbar-thumb {
+    @apply bg-[#e74c3c] rounded-[10px];
+  }
+
+  .main-chat-area::-webkit-scrollbar-thumb:hover {
+    @apply bg-[#e74c3c];
+  }
+}
+
+/* MEDIA QUERY FOR USER LIST */
+
+@media only screen and (max-width: 1000px) {
+    .filter-user-details {
+      display: none;
+    }
+    .user-search-area {
+        display: none;
+    }
+    .app-sidebar{
+        width: 15%;
+    }
+    .app-chat-area{
+        width: 85%
+    }
+}
