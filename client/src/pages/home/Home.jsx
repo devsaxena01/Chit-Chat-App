@@ -16,15 +16,20 @@ const Home = () => {
        // .on method is used to handle the event
 
        socket.emit('user-login' , user._id)
+       
        socket.on('online-users', onlineusers => {
             setOnlineUser(onlineusers);
       })
 
+      socket.on('online-users-updated', onlineusers => {
+            setOnlineUser(onlineusers);
+      })
+
     }
-  } , [user])
+  } , [user , onlineUser])
   return (
     <div className="flex flex-col min-h-screen bg-[#fdedec]">
-      <Header/>
+      <Header socket={socket}/>
       <div className="flex w-[90%] mx-auto my-2.5 p-2.5 flex-1">
          <Sidebar socket={socket} onlineUser={onlineUser}/>
         {selectedChat && <Chat socket={socket}/>}

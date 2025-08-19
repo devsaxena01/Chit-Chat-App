@@ -6,7 +6,9 @@ const userRouter = require('./controllers/userController')
 const chatRouter = require('./controllers/chatController')
 const messageRouter = require('./controllers/messageController')
 
-app.use(express.json());
+app.use(express.json({
+    limit: "50mb"
+}));
 const server = require('http').createServer(app)
 
 const io = require('socket.io')(server , {cors:{
@@ -32,6 +34,11 @@ io.on('connection', socket => {
         .to(message.members[0])
         .to(message.members[1])
         .emit('receive-message' , message)
+
+        io
+        .to(message.members[0])
+        .to(message.members[1])
+        .emit('set-message-count' , message)
     })
 
     socket.on('clear-unread-messages', data => {
@@ -53,6 +60,11 @@ io.on('connection', socket => {
             onlineUser.push(userId)
         }
         socket.emit('online-users', onlineUser);
+    })
+
+    socket.on('user-offline', userId => {
+        onlineUser.splice(onlineUser.indexOf(userId), 1);
+        io.emit('online-users-updated', onlineUser);
     })
 })
 

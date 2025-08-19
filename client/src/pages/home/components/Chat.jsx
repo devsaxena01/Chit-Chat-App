@@ -17,13 +17,15 @@ const Chat = ({socket}) => {
      const [allMessages , setAllMessages] = useState([])
      const [isTyping , setIsTyping] = useState(false)
      const [showEmojiPicker, setShowEmojiPicker] = useState(false)
+     const [data , setData] = useState(null)
 
-     const sendMessage = async () => {
+     const sendMessage = async (image) => {
       try {
         const newMessage = {
             chatId:selectedChat._id,
             sender:user._id,
-            text:message
+            text:message,
+            image:image
         }
 
         socket.emit('send-message' , {
@@ -105,6 +107,16 @@ const Chat = ({socket}) => {
         return fname + ' ' + lname;
     }
 
+    const sendImage = async (e) => {
+        const file = e.target.files[0];
+        const reader = new FileReader(file);
+        reader.readAsDataURL(file);
+
+        reader.onloadend = async () => {
+            sendMessage(reader.result);
+        }
+    }
+
 
      useEffect(() => {
       getMessages();
@@ -112,7 +124,7 @@ const Chat = ({socket}) => {
         clearUnreadMessages();
       }
 
-      socket.on('receive-message' , (message) => {
+      socket.off('receive-message').on('receive-message' , (message) => {
         const selectedChat = store.getState().userReducer.selectedChat;
         if(selectedChat._id === message.chatId){
                 setAllMessages(prevmsg => [...prevmsg, message]);
@@ -147,7 +159,7 @@ const Chat = ({socket}) => {
         })
 
         socket.on('started-typing', (data) => {
-            //setData(data);
+            setData(data);
             if(selectedChat._id === data.chatId && data.sender !== user._id){
                 setIsTyping(true);
                 setTimeout(() => {
@@ -179,7 +191,8 @@ const Chat = ({socket}) => {
                      <div class={isCurrentUserSender ? 
                       "bg-red-600 text-white px-5 py-2 mt-1 rounded-[10px] text-sm w-fit ml-[100px] rounded-tr-[0px]" : 
                       "px-5 py-2 mt-1 rounded-[10px] text-sm w-fit bg-[#ddd] text-[#28282B] mr-[100px] rounded-bl-[0px]"}>
-                                 {msg.text}
+                                 <div>{msg.text}</div>
+                                 <div>{msg.image && <img src={msg.image} alt="image" height="120" width="120"></img>}</div>
                     </div>
                     <div className='w-fit text-[13px]'
                         style={isCurrentUserSender ? {float:'right'} : {float:'left'}}>
@@ -192,14 +205,15 @@ const Chat = ({socket}) => {
                 </div>
                 })}
 
-                <div className='text-13px text-gray-400'>{isTyping && <i>typing...</i>}</div>
+                <div className='text-13px text-gray-400'>{isTyping && selectedChat?.members.map(m => m._id).includes(data?.sender) && <i>typing...</i>}</div>
           </div>
 
-          {showEmojiPicker && <div>
-            <EmojiPicker onEmojiClick={(e) => setMessage(message + e.emoji)}></EmojiPicker>
+          {showEmojiPicker && <div style={{width:'100%' , display:'flex' , padding:'0px 20px' , justifyContent:'right'}}>
+            <EmojiPicker style={{width:'300px' , height:'400px'}}  onEmojiClick={(e) => setMessage(message + e.emoji)}></EmojiPicker>
           </div>}
 
     <div class="relative mt-[20px]">
+
         <input 
             type="text" 
             placeholder="Type a message" 
@@ -215,15 +229,36 @@ const Chat = ({socket}) => {
             className="w-full h-[40px] px-[20px] py-[10px] border border-[#ddd] rounded-[5px] text-[#28282B] outline-none"
         />
 
-        <button className=" absolute right-[50px] text-[25px] text-[#e74c3c] cursor-pointer mt-2 border-none bg-transparent" 
+        <label for="file">
+
+            <i className=' absolute right-[100px] text-[25px] text-[#e74c3c] cursor-pointer mt-2 border-none bg-transparent'>
+                 Pic
+            </i>
+            
+            <input type="file" 
+               id="file"
+               style={{display: 'none'}}
+               accept="image/jpg,image/png,image/jpeg,image/gif"
+               onChange={sendImage}>
+            </input>
+
+        </label>
+
+        <button className="absolute right-[50px] text-[25px] text-[#e74c3c] cursor-pointer mt-2 border-none bg-transparent" 
             aria-hidden="true"
             onClick={() => {setShowEmojiPicker(!showEmojiPicker)}}>btn
         </button>
 
+        {/* <button className="absolute right-[50px] text-[25px] text-[#e74c3c] cursor-pointer  border-none bg-transparent" 
+            onClick={() => {setShowEmojiPicker(!showEmojiPicker)}}>
+            <i className="fa fa-smile"></i>
+        </button> */}
+
         <button className="fa fa-paper-plane absolute right-[10px] text-[25px] text-[#e74c3c] cursor-pointer mt-2 border-none bg-transparent" 
             aria-hidden="true"
-            onClick={sendMessage}>
+            onClick={() => sendMessage('')}>
         </button>
+
     </div>
 </div>
         }

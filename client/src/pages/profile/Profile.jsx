@@ -1,10 +1,15 @@
 import moment from 'moment';
 import React, { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { uploadProfilePic } from '../../apiCalls/users';
+import { hideLoader, showLoader } from '../../redux/loaderSlice';
+import toast from 'react-hot-toast';
+import { setUser } from '../../redux/usersSlice';
 
 const Profile = () => {
     const {user} = useSelector(state => state.userReducer)
     const [image , setImage] = useState('')
+    const dispatch = useDispatch()
 
     useEffect(() => {
         if(user?.profilePic){
@@ -32,6 +37,25 @@ const Profile = () => {
 
         reader.onloadend = async () => {
             setImage(reader.result);
+        }
+    }
+
+    const updateProfilePic = async () => {
+        
+        try{
+            dispatch(showLoader());
+            const response = await uploadProfilePic(image);
+            dispatch(hideLoader());
+
+            if(response.success){
+                toast.success(response.message);
+                dispatch(setUser(response.data));
+            }else{
+                toast.error(response.message);
+            }
+        }catch(err){
+            toast.error(err.message);
+            dispatch(hideLoader());
         }
     }
     
@@ -64,6 +88,9 @@ const Profile = () => {
                    file:hover:bg-gray-100 file:hover:text-[#28282B]
                    file:active:bg-gray-200 file:active:text-[#28282B]"
                 />
+                <button className='upload-image-btn'
+                onClick={updateProfilePic}
+                >Upload</button>
             </div>
         </div>
     </div>
