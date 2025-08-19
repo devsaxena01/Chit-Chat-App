@@ -1,12 +1,14 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import toast from 'react-hot-toast'
 import { createNewChat } from '../../../apiCalls/chat'
 import { hideLoader, showLoader } from "../../../redux/loaderSlice";
 import { setAllChats , setSelectedChat } from './../../../redux/usersSlice';
 import moment from 'moment';
+import store from './../../../redux/store'
 
-const UserList = ({searchKey}) => {
+
+const UserList = ({searchKey , socket , onlineUser}) => {
   const {allUsers , allChats , user:currentUser , selectedChat} = useSelector(state => state.userReducer)
   const dispatch = useDispatch()
 
@@ -97,7 +99,39 @@ const UserList = ({searchKey}) => {
                     user.lastname?.toLowerCase().includes(searchKey?.toLowerCase());
             });
         }
-    }    
+    }  
+    
+    useEffect(() => {
+      socket.on('receive-message' , (message) => {
+        const selectedChat = store.getState().userReducer.selectedChat
+        let allChats = store.getState().userReducer.allChats
+
+        if(selectedChat?._id!==message.chatId){
+          const updatedchats = allChats.map(chat => {
+            if(chat._id===message.chatId){
+              return {
+                ...chat,
+                unreadMessageCount: (chat?.unreadMessageCount || 0) + 1,
+                lastMessage: message
+              }
+            }
+            return chat
+          })
+          allChats=updatedchats
+        }
+
+        // 1. find the latest chat
+        const latestChat = allChats.find(chat => chat._id === message.chatId)
+
+        // 2. get all other chat except the latest chat
+         const otherChats = allChats.filter(chat => chat._id !== message.chatId)
+
+        // 3. create a new array where latest chat on top and then other chats
+        allChats = [latestChat, ...otherChats]
+
+        dispatch(setAllChats(allChats))
+      })
+    } , [])
 
   return (
     getData()
@@ -116,13 +150,24 @@ const UserList = ({searchKey}) => {
 
     <div className="flex flex-wrap items-center">
       {/* Profile Picture */}
-      {user.profilePic && <img src={user.profilePic} alt="Profile Pic" className="w-12 h-12 rounded-full" />}
-      { !user.profilePic && 
-      <div className={IsSelectedChat(user) ? "w-[50px] h-[50px] rounded-full text-[22px] font-bold text-center align-middle leading-[50px] bg-white text-[#e74c3c]" : 
-      "w-[50px] h-[50px] rounded-full text-[22px] font-bold text-center align-middle leading-[50px] bg-[#e74c3c] text-white"}>
+
+      {
+        user.profilePic && <img src={user.profilePic} 
+        alt="Profile Pic" 
+        className="w-12 h-12 rounded-full" 
+        style={onlineUser.includes(user._id) ? {border: '#82e0aa 3px solid'} : {}}
+       />
+      }
+
+      { 
+        !user.profilePic &&
+        <div className={IsSelectedChat(user) ? "w-[50px] h-[50px] rounded-full text-[22px] font-bold text-center align-middle leading-[50px] bg-white text-[#e74c3c]" : 
+        "w-[50px] h-[50px] rounded-full text-[22px] font-bold text-center align-middle leading-[50px] bg-[#e74c3c] text-white"}
+        style={onlineUser.includes(user._id) ? {border: '#82e0aa 3px solid'} : {}}
+      >
         {
-        user.firstname.charAt(0).toUpperCase() +
-        user.lastname.charAt(0).toUpperCase()
+         user.firstname.charAt(0).toUpperCase() +
+         user.lastname.charAt(0).toUpperCase()
         }
       </div>
       }

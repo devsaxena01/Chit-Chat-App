@@ -1,8 +1,10 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 
 const Header = () => {
     const { user } = useSelector(state => state.userReducer)
+    const navigate = useNavigate()
     //console.log(user);
     
     const getFullname = () => {
@@ -27,7 +29,8 @@ const Header = () => {
 
   <div className="flex">
     <div className="text-[#28282B] font-bold pt-2.5 pr-5">{getFullname()}</div>
-    <div className="w-10 h-10 rounded-full bg-[#e74c3c] text-white text-[20px] font-bold text-center leading-[40px]">
+    <div className="w-10 h-10 rounded-full bg-[#e74c3c] text-white text-[20px] font-bold text-center leading-[40px]"
+    onClick={() => navigate('/profile')}>
       {getInitials()}
     </div>
   </div>

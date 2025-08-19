@@ -5,15 +5,18 @@ import { hideLoader, showLoader } from '../../../redux/loaderSlice'
 import toast from 'react-hot-toast'
 import moment from 'moment'
 import { clearUnreadMessageCount } from './../../../apiCalls/chat'
+import store from './../../../redux/store'
+import { setAllChats } from '../../../redux/usersSlice'
+import EmojiPicker from "emoji-picker-react"
 
-
-const Chat = () => {
+const Chat = ({socket}) => {
     const {selectedChat , user , allChats} = useSelector(state => state.userReducer)
      const selectedUser = selectedChat.members.find(u => u._id !== user._id)
      const dispatch = useDispatch()
      const [message , setMessage] = useState('')
      const [allMessages , setAllMessages] = useState([])
-
+     const [isTyping , setIsTyping] = useState(false)
+     const [showEmojiPicker, setShowEmojiPicker] = useState(false)
 
      const sendMessage = async () => {
       try {
@@ -22,16 +25,22 @@ const Chat = () => {
             sender:user._id,
             text:message
         }
-        dispatch(showLoader())
+
+        socket.emit('send-message' , {
+          ...newMessage,
+          members:selectedChat.members.map(m => m._id),
+          read:false,
+          createdAt:moment().format("YYYY-MM-DD HH:mm:ss")
+        })
+
         const response = await createNewMessage(newMessage)
-        dispatch(hideLoader())
 
         if(response.success){
           setMessage('')
+          setShowEmojiPicker(false)
         }
       } 
       catch (error) {
-        dispatch(hideLoader())
         toast.error(error.message)
       }
      }
@@ -56,9 +65,12 @@ const Chat = () => {
      const clearUnreadMessages = async () => {
       try {
        
-        dispatch(showLoader())
+        socket.emit('clear-unread-messages', {
+                chatId: selectedChat._id,
+                members: selectedChat.members.map(m => m._id)
+        })
+
         const response = await clearUnreadMessageCount(selectedChat._id)
-        dispatch(hideLoader())
 
         if(response.success){
           allChats.map(chat => {
@@ -70,7 +82,6 @@ const Chat = () => {
         }
       } 
       catch (error) {
-        dispatch(hideLoader())
         toast.error(error.message)
       }
      }
@@ -101,16 +112,66 @@ const Chat = () => {
         clearUnreadMessages();
       }
 
+      socket.on('receive-message' , (message) => {
+        const selectedChat = store.getState().userReducer.selectedChat;
+        if(selectedChat._id === message.chatId){
+                setAllMessages(prevmsg => [...prevmsg, message]);
+        }
+
+        if(selectedChat._id === message.chatId && message.sender !== user._id){
+                clearUnreadMessages();
+            }
+        })
+
+      socket.on('message-count-cleared', data => {
+            const selectedChat = store.getState().userReducer.selectedChat;
+            const allChats = store.getState().userReducer.allChats;
+
+            if(selectedChat._id === data.chatId){
+                //UPDATING UNREAD MESSAGE COUNT IN CHAT OBJECT
+                const updatedChats = allChats.map(chat => {
+                    if(chat._id === data.chatId){
+                        return { ...chat, unreadMessageCount: 0}
+                    }
+                    return chat;
+                })
+                dispatch(setAllChats(updatedChats));
+
+                //UPDATING READ PROPRTY IN MESSAGE OBJECT
+                setAllMessages(prevMsgs => {
+                    return prevMsgs.map(msg => {
+                        return {...msg, read: true}
+                    })
+                })
+            }
+        })
+
+        socket.on('started-typing', (data) => {
+            //setData(data);
+            if(selectedChat._id === data.chatId && data.sender !== user._id){
+                setIsTyping(true);
+                setTimeout(() => {
+                    setIsTyping(false);
+                }, 2000)
+            }
+        })
+
      } , [selectedChat])
+
+     useEffect(() => {
+        const msgContainer = document.getElementById('main-chat-area')
+        msgContainer.scrollTop = msgContainer.scrollHeight
+     } , [allMessages , isTyping])
 
   return (
     <>
         {selectedChat && 
             <div className="app-chat-area bg-white w-[70%] p-[20px_30px] rounded-[10px] flex flex-col h-[85vh]">
-                <div className="app-chat-area-header px-[30px] py-[10px] mb-[20px] border-b border-[#bbb] text-right font-bold text-[#e74c3c]">
+            <div className="app-chat-area-header px-[30px] py-[10px] mb-[20px] border-b border-[#bbb] text-right font-bold text-[#e74c3c]">
                  {formatName(selectedUser)}
            </div>
-           <div className="main-chat-area flex-1 overflow-y-scroll py-[10px] px-[20px]">
+
+           <div className="main-chat-area flex-1 overflow-y-scroll py-  [10px] px-[20px]" id='main-chat-area'>
                 {allMessages.map(msg => {
                   const isCurrentUserSender = msg.sender === user._id
                   return <div class="flex" style={isCurrentUserSender ? {justifyContent:'end'} : {justifyContent:'start'}}>
@@ -130,17 +191,36 @@ const Chat = () => {
                     </div>
                 </div>
                 })}
+
+                <div className='text-13px text-gray-400'>{isTyping && <i>typing...</i>}</div>
           </div>
+
+          {showEmojiPicker && <div>
+            <EmojiPicker onEmojiClick={(e) => setMessage(message + e.emoji)}></EmojiPicker>
+          </div>}
 
     <div class="relative mt-[20px]">
         <input 
             type="text" 
             placeholder="Type a message" 
             value={message}
-            onChange={(e) => {setMessage(e.target.value)}}
-            class="w-full h-[40px] px-[20px] py-[10px] border border-[#ddd] rounded-[5px] text-[#28282B] outline-none"
+            onChange={(e) => {
+              setMessage(e.target.value)
+              socket.emit('user-typing' , {
+                chatId:selectedChat._id,
+                members:selectedChat.members.map(m => m._id),
+                sender:user._id
+              })
+            }}
+            className="w-full h-[40px] px-[20px] py-[10px] border border-[#ddd] rounded-[5px] text-[#28282B] outline-none"
         />
-        <button class="fa fa-paper-plane absolute right-[10px] text-[25px] text-[#e74c3c] cursor-pointer mt-2 border-none bg-transparent" 
+
+        <button className=" absolute right-[50px] text-[25px] text-[#e74c3c] cursor-pointer mt-2 border-none bg-transparent" 
+            aria-hidden="true"
+            onClick={() => {setShowEmojiPicker(!showEmojiPicker)}}>btn
+        </button>
+
+        <button className="fa fa-paper-plane absolute right-[10px] text-[25px] text-[#e74c3c] cursor-pointer mt-2 border-none bg-transparent" 
             aria-hidden="true"
             onClick={sendMessage}>
         </button>
