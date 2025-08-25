@@ -81,6 +81,11 @@ import Chat from './components/Chat'
 import { useSelector } from 'react-redux'
 import {io} from 'socket.io-client'
 
+// const socket = io('http://localhost:5000' , {
+//   transports: ["websocket"],
+//   withCredentials: true
+// })
+
 const socket = io('https://chit-chat-app-dyyk.onrender.com' , {
   transports: ["websocket"],
   withCredentials: true
