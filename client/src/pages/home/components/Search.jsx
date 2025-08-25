@@ -1,18 +1,21 @@
-import React from 'react'
+import React from "react";
 
-const Search = ({searchKey , setSearchKey}) => {
+const Search = ({ searchKey, setSearchKey }) => {
   return (
-    <div className="mb-5 relative">
+    <div className=" border-b border-gray-500 relative">
       <input
         type="text"
-        className="w-full h-10 px-5 py-2 border border-[#ddd] rounded-full text-[#28282B] outline-none"
+        placeholder="Search users or chats..."
+        className="w-full h-12 px-5 pr-12 rounded-t-[7px] text-gray-200 border-none  bg-transparent bg-gray-700"
         value={searchKey}
         onChange={(e) => setSearchKey(e.target.value)}
       />
-       <i className="fa fa-search absolute right-2.5 top-1/2 -translate-y-1/2 text-[25px] text-[#e74c3c]" aria-hidden="true"></i>
-  </div>
+      <i
+        className="fa fa-search absolute right-4 top-1/2 -translate-y-1/2 text-sm text-purple-300"
+        aria-hidden="true"
+      ></i>
+    </div>
+  );
+};
 
-  )
-}
-
-export default Search
+export default Search;

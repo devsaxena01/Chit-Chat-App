@@ -8,23 +8,51 @@ const chatRouter = require('./controllers/chatController')
 const messageRouter = require('./controllers/messageController')
 
 app.use(cors())
+
+// Allow both localhost and deployed frontend
+// app.use(cors({
+//     origin: [
+//         "http://localhost:3000",
+//         "https://dummychatapp-1.onrender.com" // 👈 replace with actual frontend URL
+//     ],
+//     methods: ["GET", "POST"],
+//     credentials: true
+// }));
+
 app.use(express.json({
     limit: "50mb"
 }));
+
 const server = require('http').createServer(app)
 
 const io = require('socket.io')(server , {cors:{
     origin:'http://localhost:3000',
     methods:['GET' , 'POST']
 }})
+
+// const io = require('socket.io')(server, {
+//     cors: {
+//         origin: [
+//             "http://localhost:3000",
+//             "https://dummychatapp-1.onrender.com"
+//         ],
+//         methods: ["GET", "POST"],
+//         credentials: true
+//     },
+//     transports: ["websocket", "polling"],
+//     pingInterval: 25000,
+//     pingTimeout: 60000
+// });
+
+
 app.use('/api/auth' , authRouter)
 app.use('/api/user' , userRouter)
 app.use('/api/chat' , chatRouter)
 app.use('/api/message' , messageRouter)
 
 const onlineUser = []
-//TEST SOCKET CONNECTION FROM CLIENT
 
+//TEST SOCKET CONNECTION FROM CLIENT
 io.on('connection', socket => {
     socket.on('join-room' , userid => {
         socket.join(userid)   

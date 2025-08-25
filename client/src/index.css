@@ -9,7 +9,7 @@ body{
 
 /* CHAT AREA SCROLLBAR */
 
-@layer utilities {
+/* @layer utilities {
   .main-chat-area::-webkit-scrollbar {
     @apply w-[5px];
   }
@@ -25,12 +25,12 @@ body{
   .main-chat-area::-webkit-scrollbar-thumb:hover {
     @apply bg-[#e74c3c];
   }
-}
+} */
 
 /* MEDIA QUERY FOR USER LIST */
 
 @media only screen and (max-width: 1000px) {
-    .filter-user-details {
+    /* .filter-user-details {
       display: none;
     }
     .user-search-area {
@@ -41,5 +41,11 @@ body{
     }
     .app-chat-area{
         width: 85%
-    }
+    } */
+}
+
+@media (max-width: 768px) {
+  .app-sidebar, .app-chat-area {
+    transition: all 0.3s ease-in-out;
+  }
 }
