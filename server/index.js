@@ -7,17 +7,17 @@ const userRouter = require('./controllers/userController')
 const chatRouter = require('./controllers/chatController')
 const messageRouter = require('./controllers/messageController')
 
-app.use(cors())
+// app.use(cors())
 
-// Allow both localhost and deployed frontend
-// app.use(cors({
-//     origin: [
-//         "http://localhost:3000",
-//         "https://dummychatapp-1.onrender.com" // 👈 replace with actual frontend URL
-//     ],
-//     methods: ["GET", "POST"],
-//     credentials: true
-// }));
+//Allow both localhost and deployed frontend
+app.use(cors({
+    origin: [
+        "http://localhost:3000",
+        "https://chatapp-7249.onrender.com" // 👈 replace with actual frontend URL
+    ],
+    methods: ["GET", "POST"],
+    credentials: true
+}));
 
 app.use(express.json({
     limit: "50mb"
@@ -25,24 +25,24 @@ app.use(express.json({
 
 const server = require('http').createServer(app)
 
-const io = require('socket.io')(server , {cors:{
-    origin:'http://localhost:3000',
-    methods:['GET' , 'POST']
-}})
+// const io = require('socket.io')(server , {cors:{
+//     origin:'http://localhost:3000',
+//     methods:['GET' , 'POST']
+// }})
 
-// const io = require('socket.io')(server, {
-//     cors: {
-//         origin: [
-//             "http://localhost:3000",
-//             "https://dummychatapp-1.onrender.com"
-//         ],
-//         methods: ["GET", "POST"],
-//         credentials: true
-//     },
-//     transports: ["websocket", "polling"],
-//     pingInterval: 25000,
-//     pingTimeout: 60000
-// });
+const io = require('socket.io')(server, {
+    cors: {
+        origin: [
+            "http://localhost:3000",
+            "https://chatapp-7249.onrender.com"
+        ],
+        methods: ["GET", "POST"],
+        credentials: true
+    },
+    transports: ["websocket", "polling"],
+    pingInterval: 25000,
+    pingTimeout: 60000
+});
 
 
 app.use('/api/auth' , authRouter)
