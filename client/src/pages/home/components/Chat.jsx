@@ -180,7 +180,7 @@ const Chat = ({socket}) => {
   return (
     <>
         {selectedChat && 
-            <div className="app-chat-area bg-gradient-to-b from-[#0f172a] via-[#1e293b] to-[#0f172a] p-[2px_3px]  flex flex-col h-[92vh] overflow-hidden">
+            <div className="app-chat-area bg-gradient-to-b from-[#0f172a] via-[#1e293b] to-[#0f172a] p-[2px_3px]  flex flex-col h-[86vh] overflow-hidden">
               
             <div className=" app-chat-area-header flex items-center gap-3 px-[10px] py-[10px] mb-[20px] border-b border-gray-500  text-left text-2xl font-bold text-cyan-400">
               

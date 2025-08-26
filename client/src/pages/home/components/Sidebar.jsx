@@ -6,7 +6,7 @@ const Sidebar = ({ socket, onlineUser }) => {
   const [searchKey, setSearchKey] = useState("");
 
   return (
-    <div className=" flex flex-col h-[92vh] overflow-hidden border-r border-gray-500    bg-gradient-to-b from-[#0f172a] via-[#1e293b] to-[#0f172a]
+    <div className=" flex flex-col h-[86vh] overflow-hidden border-r border-gray-500    bg-gradient-to-b from-[#0f172a] via-[#1e293b] to-[#0f172a]
  p-3 shadow-lg  mr-">
       
       {/* Sidebar Header */}
