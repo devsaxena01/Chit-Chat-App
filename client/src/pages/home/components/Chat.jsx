@@ -22,6 +22,8 @@ const Chat = ({socket}) => {
      const [data , setData] = useState(null)
 
      const sendMessage = async (image) => {
+      if (!message.trim() && !image) return;
+      
       try {
         const newMessage = {
             chatId:selectedChat._id,

@@ -11,7 +11,7 @@ body{
 
 @layer utilities {
   .main-chat-area::-webkit-scrollbar {
-    @apply w-[5px];
+    @apply w-[8px];
   }
 
   .main-chat-area::-webkit-scrollbar-track {
@@ -19,11 +19,11 @@ body{
   }
 
   .main-chat-area::-webkit-scrollbar-thumb {
-    @apply bg-[#e74c3c] rounded-[10px];
+    @apply bg-gray-500 rounded-[10px];
   }
 
   .main-chat-area::-webkit-scrollbar-thumb:hover {
-    @apply bg-[#e74c3c];
+    @apply bg-gray-300;
   }
 
   .userlist-area::-webkit-scrollbar {
@@ -35,11 +35,11 @@ body{
   }
 
   .userlist-area::-webkit-scrollbar-thumb {
-    @apply bg-[#e74c3c] rounded-[10px];
+    @apply bg-gray-500 rounded-[10px];
   }
 
   .userlist-area::-webkit-scrollbar-thumb:hover {
-    @apply bg-[#e74c3c];
+    @apply bg-gray-300;
   }
 }
 
