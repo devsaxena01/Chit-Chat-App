@@ -193,7 +193,7 @@ const Chat = ({socket}) => {
                  
            </div>
 
-           <div className="main-chat-area flex-1 h-64 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-slate-800 py-[10px] px-[20px] overflow-hidden" id='main-chat-area'>
+           <div className="main-chat-area flex-1 h-64 overflow-y-scroll py-[10px] px-[20px] overflow-hidden" id='main-chat-area'>
                 {allMessages.map(msg => {
                   const isCurrentUserSender = msg.sender === user._id
                   return <div class="flex" style={isCurrentUserSender ? {justifyContent:'end'} : {justifyContent:'start'}}>

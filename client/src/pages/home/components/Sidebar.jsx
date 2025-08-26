@@ -20,7 +20,7 @@ const Sidebar = ({ socket, onlineUser }) => {
       </div>
 
       {/* User List */}
-      <div className="flex-1 h-64 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-slate-800">
+      <div className="userlist-area flex-1 h-64 overflow-y-scroll">
         <UserList
           searchKey={searchKey}
           socket={socket}
