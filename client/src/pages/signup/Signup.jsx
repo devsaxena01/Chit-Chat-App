@@ -50,11 +50,13 @@ const Signup = () => {
 
         {/* Content */}
         <div className="relative z-10">
+
           {/* Header */}
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold mb-2 
             text-center text-cyan-400">
             Create Account
           </h2>
+
           <p className="text-center text-gray-400 mb-6 text-xs sm:text-sm lg:text-base">
             Sign up to unlock lightning speed ⚡
           </p>
@@ -63,9 +65,11 @@ const Signup = () => {
           <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
             {/* First Name */}
             <div>
+
               <label htmlFor="firstName" className="block text-xs sm:text-sm font-semibold text-gray-300 mb-1">
                 First Name
               </label>
+              
               <div className="relative">
                 <User className="absolute left-3 top-3 text-cyan-400" size={18} />
                 <input
@@ -79,13 +83,16 @@ const Signup = () => {
                     placeholder-gray-500 text-sm sm:text-base"
                 />
               </div>
+
             </div>
 
             {/* Last Name */}
             <div>
+
               <label htmlFor="lastName" className="block text-xs sm:text-sm font-semibold text-gray-300 mb-1">
                 Last Name
               </label>
+              
               <div className="relative">
                 <User className="absolute left-3 top-3 text-cyan-400" size={18} />
                 <input
@@ -99,13 +106,16 @@ const Signup = () => {
                     placeholder-gray-500 text-sm sm:text-base"
                 />
               </div>
+
             </div>
 
             {/* Email */}
             <div>
+
               <label htmlFor="email" className="block text-xs sm:text-sm font-semibold text-gray-300 mb-1">
                 Email
               </label>
+              
               <div className="relative">
                 <Mail className="absolute left-3 top-3 text-cyan-400" size={18} />
                 <input
@@ -119,13 +129,16 @@ const Signup = () => {
                     placeholder-gray-500 text-sm sm:text-base"
                 />
               </div>
+
             </div>
 
             {/* Password */}
             <div>
+
               <label htmlFor="password" className="block text-xs sm:text-sm font-semibold text-gray-300 mb-1">
                 Password
               </label>
+              
               <div className="relative">
                 <Lock className="absolute left-3 top-3 text-cyan-400" size={18} />
                 <input
@@ -139,6 +152,7 @@ const Signup = () => {
                     placeholder-gray-500 text-sm sm:text-base"
                 />
               </div>
+              
             </div>
 
             {/* Signup Button */}
@@ -151,6 +165,7 @@ const Signup = () => {
             >
               ⚡ Sign Up
             </button>
+
           </form>
 
           {/* Footer */}
@@ -160,6 +175,7 @@ const Signup = () => {
               Login
             </Link>
           </p>
+          
         </div>
       </div>
     </div>

@@ -13,7 +13,7 @@ const messageRouter = require('./controllers/messageController')
 app.use(cors({
     origin: [
         "http://localhost:3000",
-        "https://chatapp-7249.onrender.com" // 👈 replace with actual frontend URL
+        "https://chatapp-7249.onrender.com" // replace with actual frontend URL
     ],
     methods: ["GET", "POST"],
     credentials: true
@@ -34,7 +34,7 @@ const io = require('socket.io')(server, {
     cors: {
         origin: [
             "http://localhost:3000",
-            "https://chatapp-7249.onrender.com"
+            "https://chatapp-7249.onrender.com" // replace with actual frontend URL
         ],
         methods: ["GET", "POST"],
         credentials: true

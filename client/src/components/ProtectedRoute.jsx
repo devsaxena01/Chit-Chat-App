@@ -22,11 +22,12 @@ const getloggedInUser = async () => {
             if(response.success){
                 dispatch(setUser(response.data));
             }
-            // else{ // agar main ie else condition ko lgata hu to login krne ke baad ye mujhe home page pr nhi le jata hai aur agar nhi lgata hu to le jaata hai isme bug hai
+            // else{ // agar main is else condition ko lgata hu to login krne ke baad ye mujhe home page pr nhi le jata hai aur agar nhi lgata hu to le jaata hai isme bug hai
             //    toast.error(response.message)         
             //     navigate('/login')
             // }
-        }catch(error){
+        }
+        catch(error){
             dispatch(hideLoader())
             navigate('/login');
         }
@@ -46,7 +47,8 @@ const getAllUsersFromDb = async () => {
             //    toast.error(response.message)         
             //     navigate('/login')
             // }
-        }catch(error){
+        }
+        catch(error){
             dispatch(hideLoader())
             navigate('/login');
         }
@@ -58,24 +60,25 @@ const getAllUsersFromDb = async () => {
             if(response.success){
                 dispatch(setAllChats(response.data))
             }
-        }catch(error){
+        }
+        catch(error){
             navigate('/login');
         }
     }
 
-     useEffect(() => {
+    useEffect(() => {
         if(localStorage.getItem('token')){
             getloggedInUser();
             getAllUsersFromDb();
             getCurrentUserChats()
-        }else{
+        }
+        else{
             navigate('/login');
         }
     } , []);
 
     return (
         <div>
-            {/* <p>Name:{user?.firstname + ' ' + user?.lastname}</p> */}
             { children }
         </div>
     );
