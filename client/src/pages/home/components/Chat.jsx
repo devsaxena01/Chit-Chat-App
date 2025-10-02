@@ -39,11 +39,13 @@ const Chat = ({socket}) => {
           createdAt:moment().format("YYYY-MM-DD HH:mm:ss")
         })
 
+        setMessage('')
+        setShowEmojiPicker(false)
+
         const response = await createNewMessage(newMessage)
 
         if(response.success){
-          setMessage('')
-          setShowEmojiPicker(false)
+          
         }
       } 
       catch (error) {
@@ -237,6 +239,12 @@ const Chat = ({socket}) => {
                 members:selectedChat.members.map(m => m._id),
                 sender:user._id
               })
+            }}
+            onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    sendMessage('');
+                }
             }}
             className="w-full h-12 px-5 pr-12 rounded-[4px] text-gray-200 border-none bg-gray-800"
         />

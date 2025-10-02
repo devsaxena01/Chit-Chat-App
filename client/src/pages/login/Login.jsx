@@ -4,12 +4,31 @@ import { loginUser } from '../../apiCalls/auth';
 import { toast } from 'react-hot-toast';
 import { useDispatch } from "react-redux";
 import { hideLoader, showLoader } from '../../redux/loaderSlice';
+// import { setUser } from '../../redux/usersSlice'; 
+// import { getLoggedUser } from '../../apiCalls/users';
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  // const fetchUserData = async (token) => {
+  //     let userResponse = null;
+  //       try {
+  //           userResponse = await getLoggedUser(); 
+
+  //           if (userResponse.success) {
+  //               dispatch(setUser(userResponse.user)); 
+  //           } else {
+  //               toast.error(userResponse.message || "Failed to fetch user data.");
+  //               localStorage.removeItem("token");
+  //           }
+  //       } catch (error) {
+  //           toast.error("Error fetching user data after login.");
+  //           localStorage.removeItem("token");
+  //       }
+  //   }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -23,6 +42,7 @@ const Login = () => {
       if (response.success) {
         toast.success(response.message);
         localStorage.setItem("token", response.token);
+        //await fetchUserData(response.token);
         navigate("/");
       } else {
         toast.error(response.message);
